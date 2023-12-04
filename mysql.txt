@@ -1,0 +1,67 @@
+CREATE TABLE IF NOT EXISTS address(
+    uuid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    street_name VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS city(
+    uuid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    city_name VARCHAR(255),
+    address_uuid BIGINT,
+    FOREIGN KEY (address_uuid) REFERENCES address(uuid)
+);
+
+CREATE TABLE IF NOT EXISTS region(
+    uuid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    region_name VARCHAR(255) UNIQUE KEY,
+    city_uuid BIGINT,
+    FOREIGN KEY (city_uuid) REFERENCES  city(uuid)
+);
+
+CREATE TABLE IF NOT EXISTS district(
+    uuid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    district_name VARCHAR(255) UNIQUE KEY,
+    region_uuid BIGINT,
+    FOREIGN KEY (region_uuid) REFERENCES  region(uuid)
+);
+
+CREATE TABLE IF NOT EXISTS type(
+    uuid BIGINT NOT NULL PRIMARY KEY,
+    type_name VARCHAR(255) UNIQUE KEY,
+    img_link VARCHAR(255),
+    score INT
+);
+
+CREATE TABLE IF NOT EXISTS point(
+    uuid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    avl_types VARCHAR(255),
+    FOREIGN KEY (avl_types) REFERENCES type(type_name),
+    location VARCHAR(255),
+    district_name VARCHAR(255),
+    FOREIGN KEY (district_name) REFERENCES district(district_name),
+    region_name VARCHAR(255),
+    FOREIGN KEY (region_name) REFERENCES region(region_name),
+    city_uuid BIGINT,
+    FOREIGN KEY (city_uuid) REFERENCES city(uuid),
+    address_uuid BIGINT,
+    FOREIGN KEY (address_uuid) REFERENCES address(uuid),
+    hours VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS telegram_user(
+    uuid BIGINT NOT NULL PRIMARY KEY,
+    username VARCHAR(255),
+    location VARCHAR(255),
+    score INT
+);
+
+CREATE TABLE IF NOT EXISTS recycle_event(
+    uuid BIGINT NOT NULL PRIMARY KEY,
+    user_uuid BIGINT,
+    FOREIGN KEY (user_uuid) REFERENCES telegram_user(uuid),
+    point_uuid BIGINT,
+    FOREIGN KEY (point_uuid) REFERENCES point(uuid),
+    type_uuid BIGINT,
+    FOREIGN KEY (type_uuid) REFERENCES type(uuid),
+    event_score INT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
