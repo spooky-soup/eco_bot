@@ -38,7 +38,8 @@ def answer(webapp_message):
        try:
            data['radius'] = int(data['radius'])
        except ValueError:
-           bot.send_message(webapp_message.chat.id, f"Произошла ошибка, вы ввели в поле \"Радиус\" значение \"{data['radius']}\".\n" +
+           if len(data['radius']) != 0:
+                bot.send_message(webapp_message.chat.id, f"Произошла ошибка, вы ввели в поле \"Радиус\" значение \"{data['radius']}\".\n" +
                             'Пожалуйста, попробуйте еще раз и введите целое число километров.')
            return
        # Формат данных: {"region":"Новосибирская область","city":"Новосибирск","street":"Ильича","radius":"4"}
